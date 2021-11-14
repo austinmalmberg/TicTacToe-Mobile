@@ -23,10 +23,30 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late bool _isClearing;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _isClearing = false;
+  }
+
+  void _setClearing(bool value) {
+    setState(() {
+      _isClearing = value;
+    });
+  }
+
   List<Widget> _createTiles(
       BuildContext context, List<PlayerAvatar?> board, double tileDimension) {
     return board
-        .mapIndexed((index, _) => Tile(index: index, dimension: tileDimension))
+        .mapIndexed((index, _) => Tile(
+              index: index,
+              dimension: tileDimension,
+              isClearing: _isClearing,
+              setClearing: _setClearing,
+            ))
         .toList();
   }
 

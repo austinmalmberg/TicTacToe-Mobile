@@ -6,22 +6,32 @@ import 'package:tictactoe/screen/victory/main.dart';
 class Tile extends StatelessWidget {
   final int index;
   final double dimension;
+  final bool isClearing;
+  final Function(bool) setClearing;
 
   const Tile({
     Key? key,
     required this.index,
     required this.dimension,
+    required this.isClearing,
+    required this.setClearing,
   }) : super(key: key);
 
   void _updateGameState(BuildContext context, GameState gameState) async {
+    // Stop updates while clearing.
+    if (isClearing) return;
+
     gameState.placePlayer(index);
 
     if (gameState.isDraw) {
+      setClearing(true);
+
       // Clear the board after a time.
-      Future.delayed(
-        const Duration(seconds: 2),
-        () => gameState.reset(),
-      );
+      Future.delayed(const Duration(seconds: 2), () {
+        gameState.reset();
+
+        setClearing(false);
+      });
     } else if (gameState.hasWinner) {
       // When there is a winner, display the VictoryScreen.
       await Navigator.of(context).push(MaterialPageRoute(
